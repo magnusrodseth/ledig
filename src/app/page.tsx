@@ -1,3 +1,5 @@
+// src/app/page.tsx
+
 import LoginWithGoogleButton from "@/components/login-with-google-button";
 import { createClient } from "@/utils/supabase/server";
 import { calculateAvailability, DayAvailability } from "@/utils/availability";

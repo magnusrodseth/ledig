@@ -1,7 +1,7 @@
 import { redirect } from "next/navigation";
 import { nb } from "date-fns/locale";
 import { DayAvailability } from "./availability";
-import { format } from "date-fns";
+import { addDays, format, getISOWeek, startOfISOWeek } from "date-fns";
 
 /**
  * Redirects to a specified path with an encoded message as a query parameter.
@@ -19,15 +19,14 @@ export function encodedRedirect(
 }
 
 export function getWeekDateRange(weekNumber: number, year: number) {
-  const firstDayOfYear = new Date(year, 0, 1);
-  const daysOffset =
-    (weekNumber - 1) * 7 +
-    (firstDayOfYear.getDay() > 4
-      ? 8 - firstDayOfYear.getDay()
-      : 1 - firstDayOfYear.getDay());
-  const startDate = new Date(firstDayOfYear.getTime() + daysOffset * 86400000);
-  const endDate = new Date(startDate.getTime() + 6 * 86400000);
+  const firstWeekStart = startOfISOWeek(new Date(year, 0, 4));
+  const startDate = addDays(firstWeekStart, (weekNumber - 1) * 7);
+  const endDate = addDays(startDate, 6);
   return { startDate, endDate };
+}
+
+export function getWeekNumber(date: Date) {
+  return getISOWeek(date);
 }
 
 export function formatAvailabilityText(
