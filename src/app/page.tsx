@@ -6,15 +6,18 @@ import { calculateAvailability, DayAvailability } from "@/utils/availability";
 import { format } from "date-fns";
 import { nb } from "date-fns/locale"; // Import Norwegian locale
 import { getCalendarEvents } from "@/lib/google-calendar";
-import { H1, H2, H3, P, Muted } from "@/components/typography";
+import { H1, H2, H3, P } from "@/components/typography";
 import {
   capitalize,
   formatAvailabilityText,
   getWeekDateRange,
+  getWeekNumber,
 } from "@/utils/utils";
 import { RouteProps } from "@/types";
 import { User } from "@supabase/supabase-js";
 import CopyButton from "@/components/copy-button";
+import SelectFields from "@/components/select-fields";
+import { Separator } from "@/components/ui/separator";
 
 export default async function Index({ searchParams }: RouteProps) {
   const supabase = createClient();
@@ -22,8 +25,11 @@ export default async function Index({ searchParams }: RouteProps) {
   // Get week number and year from query parameters if provided
   const weekNumber = searchParams.week
     ? parseInt(searchParams.week)
-    : undefined;
-  const year = searchParams.year ? parseInt(searchParams.year) : undefined;
+    : getWeekNumber(new Date());
+  const year = new Date().getFullYear();
+
+  const workStartTime = searchParams.startTime || "09:00";
+  const workEndTime = searchParams.endTime || "17:00";
 
   let availability: DayAvailability[] = [];
   let user: User | null = null;
@@ -43,10 +49,6 @@ export default async function Index({ searchParams }: RouteProps) {
         currentWeekNumber,
         currentYear
       );
-
-      // Define working hours (adjust as needed)
-      const workStartTime = "09:00";
-      const workEndTime = "17:00";
 
       // Calculate availability
       availability = calculateAvailability(
@@ -76,8 +78,16 @@ export default async function Index({ searchParams }: RouteProps) {
 
       {user && (
         <>
+          <SelectFields
+            weekNumber={weekNumber}
+            workStartTime={workStartTime}
+            workEndTime={workEndTime}
+          />
+
+          <Separator />
+
           {availability.length === 0 ? (
-            <div className="flex flex-col items-center mt-10">
+            <div className="flex flex-col items-center">
               <H2>Ingen tilgjengelighet funnet</H2>
               <P>
                 Du har ingen ledige tidsrom for den valgte perioden. Vennligst
@@ -85,12 +95,9 @@ export default async function Index({ searchParams }: RouteProps) {
               </P>
             </div>
           ) : (
-            <div className="mt-10">
+            <div className="flex flex-col gap-4">
               <div className="flex gap-2 justify-center items-center">
-                <H2>
-                  Din tilgjengelighet for{" "}
-                  {weekNumber ? `uke ${weekNumber}` : "denne uken"}
-                </H2>
+                <H2>Din tilgjengelighet for uke {weekNumber}</H2>
               </div>
               <div className="mt-6">
                 {availability.map((day) => (
@@ -116,6 +123,8 @@ export default async function Index({ searchParams }: RouteProps) {
                   </div>
                 ))}
               </div>
+
+              <Separator />
 
               <CopyButton
                 textToCopy={formatAvailabilityText(availability)}
