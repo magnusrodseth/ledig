@@ -5,6 +5,7 @@
 import { signInWithGoogleAction } from "@/app/actions";
 import { Button } from "@/components/ui/button";
 import { useTransition } from "react";
+import { Icons } from "./icons";
 
 const LoginWithGoogleButton = () => {
   const [isPending, startTransition] = useTransition();
@@ -22,6 +23,7 @@ const LoginWithGoogleButton = () => {
       onClick={handleLoginWithGoogle}
       disabled={isPending}
     >
+      <Icons.google className="w-4 h-4" />
       Logg inn med Google
     </Button>
   );

@@ -8,16 +8,16 @@ import { toast } from "sonner";
 const SignOutButton = () => {
   const handleSignOut = async () => {
     toast.promise(signOutAction(), {
-      loading: "Signing out...",
-      success: "Successfully signed out!",
-      error: "An error occurred while signing out. Please try again.",
+      loading: "Logger ut...",
+      success: "Suksess! Du er nå logget ut.",
+      error: "En feil oppstod under utlogging. Vennligst prøv igjen.",
     });
   };
 
   return (
     <Button className="flex gap-2" variant="outline" onClick={handleSignOut}>
       <LogOut className="w-4 h-4" />
-      Sign out
+      Logg ut
     </Button>
   );
 };
