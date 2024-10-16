@@ -1,4 +1,4 @@
-import { env } from "@/env";
+import { env } from "@/env.mjs";
 import { createServerClient } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
 
