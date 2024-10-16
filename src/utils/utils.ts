@@ -10,7 +10,19 @@ import { redirect } from "next/navigation";
 export function encodedRedirect(
   type: "error" | "success",
   path: string,
-  message: string,
+  message: string
 ) {
   return redirect(`${path}?${type}=${encodeURIComponent(message)}`);
+}
+
+export function getWeekDateRange(weekNumber: number, year: number) {
+  const firstDayOfYear = new Date(year, 0, 1);
+  const daysOffset =
+    (weekNumber - 1) * 7 +
+    (firstDayOfYear.getDay() > 4
+      ? 8 - firstDayOfYear.getDay()
+      : 1 - firstDayOfYear.getDay());
+  const startDate = new Date(firstDayOfYear.getTime() + daysOffset * 86400000);
+  const endDate = new Date(startDate.getTime() + 6 * 86400000);
+  return { startDate, endDate };
 }

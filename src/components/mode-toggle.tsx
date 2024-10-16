@@ -30,7 +30,7 @@ export function ModeToggle() {
           }}
         >
           <Sun className="mr-2 h-4 w-4" />
-          <span>Lys</span>
+          <span>Light</span>
         </DropdownMenuItem>
         <DropdownMenuItem
           onClick={() => {
@@ -38,7 +38,7 @@ export function ModeToggle() {
           }}
         >
           <Moon className="mr-2 h-4 w-4" />
-          <span>Mørk</span>
+          <span>Dark</span>
         </DropdownMenuItem>
         <DropdownMenuItem
           onClick={() => {
