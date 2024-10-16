@@ -21,7 +21,8 @@ export const metadata: Metadata = {
   description:
     "En enkel måte å se din tilgjengelighet basert på Google Kalender.",
   icons: {
-    icon: "📆",
+    icon: "/favicon.ico",
+    apple: "/apple-touch-icon.png",
   },
 };
 
