@@ -10,6 +10,8 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Label } from "./ui/label";
+import { RefreshCcw } from "lucide-react"; // Import the reset icon
+import { Button } from "./ui/button";
 
 interface SelectFieldsProps {
   weekNumber: number;
@@ -48,6 +50,11 @@ export default function SelectFields({
 }: SelectFieldsProps) {
   const router = useRouter();
   const searchParams = useSearchParams();
+
+  // Default values
+  const defaultWeekNumber = getWeekNumber(new Date());
+  const defaultWorkStartTime = 9; // 09:00
+  const defaultWorkEndTime = 17; // 17:00
 
   // Parse initial startTime and endTime to numbers
   const initialStartTime = parseInt(workStartTime.split(":")[0]);
@@ -95,6 +102,19 @@ export default function SelectFields({
     router.push(`?${search}`);
   };
 
+  // Handle reset
+  const handleReset = () => {
+    const defaultWeek = defaultWeekNumber.toString();
+    setWeek(defaultWeek);
+    setStartTime(defaultWorkStartTime);
+    setEndTime(defaultWorkEndTime);
+    updateUrl({
+      week: defaultWeek,
+      startTime: "09:00",
+      endTime: "17:00",
+    });
+  };
+
   // Get current week number and total weeks
   const currentWeekNumber = getWeekNumber(new Date());
   const totalWeeks = getTotalWeeksInYear(new Date().getFullYear());
@@ -110,7 +130,7 @@ export default function SelectFields({
 
   return (
     <div className="flex flex-col items-center mt-10 gap-4">
-      <div className="flex gap-4">
+      <div className="flex gap-4 items-end">
         <div className="flex flex-col">
           <Label className="mb-2">Velg uke</Label>
           <Select value={week} onValueChange={handleWeekChange}>
@@ -163,6 +183,18 @@ export default function SelectFields({
                 ))}
             </SelectContent>
           </Select>
+        </div>
+
+        <div className="flex flex-col">
+          <Label className="mb-2 invisible">Nullstill</Label>
+          <Button
+            onClick={handleReset}
+            className="flex gap-2"
+            variant="secondary"
+          >
+            <RefreshCcw className="w-4 h-4" />
+            Nullstill
+          </Button>
         </div>
       </div>
     </div>
