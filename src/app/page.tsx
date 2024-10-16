@@ -2,11 +2,17 @@ import LoginWithGoogleButton from "@/components/login-with-google-button";
 import { createClient } from "@/utils/supabase/server";
 import { calculateAvailability, DayAvailability } from "@/utils/availability";
 import { format } from "date-fns";
+import { nb } from "date-fns/locale"; // Import Norwegian locale
 import { getCalendarEvents } from "@/lib/google-calendar";
-import { Muted } from "@/components/typography";
-import { getWeekDateRange } from "@/utils/utils";
+import { H1, H2, H3, P, Muted } from "@/components/typography";
+import {
+  capitalize,
+  formatAvailabilityText,
+  getWeekDateRange,
+} from "@/utils/utils";
 import { RouteProps } from "@/types";
 import { User } from "@supabase/supabase-js";
+import CopyButton from "@/components/copy-button";
 
 export default async function Index({ searchParams }: RouteProps) {
   const supabase = createClient();
@@ -54,43 +60,69 @@ export default async function Index({ searchParams }: RouteProps) {
   }
 
   return (
-    <>
-      <main className="flex-1 flex flex-col gap-6 px-4">
-        {!user && (
-          <div className="flex flex-col justify-center items-center gap-2">
-            <Muted>Please sign in to view your availability.</Muted>
-            <LoginWithGoogleButton />
-          </div>
-        )}
+    <main className="flex-1 flex flex-col gap-6 px-4">
+      {!user && (
+        <div className="flex flex-col justify-center items-center gap-4 mt-10">
+          <H1 className="text-center">Velkommen til Ledig</H1>
+          <P className="text-center max-w-md">
+            Se og eksporter enkelt din tilgjengelighet basert på dine Google
+            Kalender-hendelser. Logg inn for å komme i gang.
+          </P>
+          <LoginWithGoogleButton />
+        </div>
+      )}
 
-        {user && availability.length === 0 && (
-          <p>No availability left for this week.</p>
-        )}
+      {user && (
+        <>
+          {availability.length === 0 ? (
+            <div className="flex flex-col items-center mt-10">
+              <H2>Ingen tilgjengelighet funnet</H2>
+              <P>
+                Du har ingen ledige tidsrom for den valgte perioden. Vennligst
+                sjekk kalenderen din eller juster arbeidstidene dine.
+              </P>
+            </div>
+          ) : (
+            <div className="mt-10">
+              <div className="flex gap-2 justify-center items-center">
+                <H2>
+                  Din tilgjengelighet for{" "}
+                  {weekNumber ? `uke ${weekNumber}` : "denne uken"}
+                </H2>
+              </div>
+              <div className="mt-6">
+                {availability.map((day) => (
+                  <div key={day.date} className="mb-6">
+                    <H3>
+                      {capitalize(
+                        format(new Date(day.date), "EEEE d. MMMM", {
+                          locale: nb,
+                        })
+                      )}
+                    </H3>
+                    {day.freeIntervals.length > 0 ? (
+                      <ul className="list-disc pl-6">
+                        {day.freeIntervals.map((interval, index) => (
+                          <li key={index}>
+                            {interval.start} - {interval.end}
+                          </li>
+                        ))}
+                      </ul>
+                    ) : (
+                      <P>Ingen tilgjengelighet</P>
+                    )}
+                  </div>
+                ))}
+              </div>
 
-        {availability.length > 0 && (
-          <div>
-            <h1>Your Availability for Week {weekNumber || "Current"}:</h1>
-            <ul>
-              {availability.map((day) => (
-                <li key={day.date}>
-                  <strong>{format(new Date(day.date), "EEEE, MMMM d")}</strong>
-                  {day.freeIntervals.length > 0 ? (
-                    <ul>
-                      {day.freeIntervals.map((interval, index) => (
-                        <li key={index}>
-                          {interval.start} - {interval.end}
-                        </li>
-                      ))}
-                    </ul>
-                  ) : (
-                    <p>No availability</p>
-                  )}
-                </li>
-              ))}
-            </ul>
-          </div>
-        )}
-      </main>
-    </>
+              <CopyButton
+                textToCopy={formatAvailabilityText(availability)}
+                className="mt-4 w-full"
+              />
+            </div>
+          )}
+        </>
+      )}
+    </main>
   );
 }

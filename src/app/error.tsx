@@ -8,15 +8,15 @@ import Link from "next/link";
 
 export default function ErrorPage() {
   return (
-    <div>
-      <H1>Oops!</H1>
-      <P>Something went wrong.</P>
+    <div className="flex gap-2 flex-col justify-center items-center">
+      <H1>Oisann!</H1>
+      <P>Noe gikk galt.</P>
       <Link
         href="/"
         className={cn("flex gap-2", buttonVariants({ variant: "outline" }))}
       >
         <Home className="w-4 h-4" />
-        Take me home
+        Ta meg hjem
       </Link>
     </div>
   );

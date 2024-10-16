@@ -42,6 +42,8 @@ export function calculateAvailability(
     (endDate.getTime() - startDate.getTime()) / (1000 * 3600 * 24)
   );
 
+  console.log({ totalDays });
+
   for (let dayOffset = 0; dayOffset <= totalDays; dayOffset++) {
     const currentDate = addDays(startDate, dayOffset);
     const dateStr = format(currentDate, "yyyy-MM-dd");

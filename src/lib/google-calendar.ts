@@ -1,6 +1,7 @@
 import { calendar_v3, google } from "googleapis";
 import { createClient } from "@/utils/supabase/server";
 import { GoogleCalendarEvent } from "@/types";
+import { addDays } from "date-fns";
 
 export async function getCalendarEvents(weekNumber?: number, year?: number) {
   const supabase = createClient();
@@ -76,7 +77,8 @@ function getWeekDateRange(weekNumber?: number, year?: number) {
       ? 8 - firstDayOfYear.getDay()
       : 1 - firstDayOfYear.getDay());
   const startDate = new Date(firstDayOfYear.getTime() + daysOffset * 86400000);
-  const endDate = new Date(startDate.getTime() + 6 * 86400000);
+
+  const endDate = addDays(startDate, 7);
 
   return { startDate, endDate };
 }

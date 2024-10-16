@@ -16,7 +16,8 @@ const defaultUrl = process.env.VERCEL_URL
 export const metadata = {
   metadataBase: new URL(defaultUrl),
   title: "Ledig",
-  description: "TODO",
+  description:
+    "En enkel måte å se din tilgjengelighet basert på Google Kalender.",
 };
 
 export default async function RootLayout({

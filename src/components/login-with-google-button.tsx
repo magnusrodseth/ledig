@@ -1,12 +1,18 @@
+// src/components/login-with-google-button.tsx
+
 "use client";
 
 import { signInWithGoogleAction } from "@/app/actions";
-import { Icons } from "./icons";
-import { Button } from "./ui/button";
+import { Button } from "@/components/ui/button";
+import { useTransition } from "react";
 
 const LoginWithGoogleButton = () => {
-  const handleLoginWithGoogle = async () => {
-    await signInWithGoogleAction();
+  const [isPending, startTransition] = useTransition();
+
+  const handleLoginWithGoogle = () => {
+    startTransition(() => {
+      signInWithGoogleAction();
+    });
   };
 
   return (
@@ -14,9 +20,9 @@ const LoginWithGoogleButton = () => {
       variant="outline"
       className="flex gap-2"
       onClick={handleLoginWithGoogle}
+      disabled={isPending}
     >
-      <Icons.google className="w-4 h-4 " />
-      Sign in with Google
+      Logg inn med Google
     </Button>
   );
 };
